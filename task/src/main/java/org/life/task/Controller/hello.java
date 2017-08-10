@@ -6,12 +6,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("home")
+@RequestMapping("/")
 public class hello {
     private static final Logger LOGGER = LoggerFactory.getLogger(hello.class);
-    @RequestMapping("/index")
-    public void index() {
+    @RequestMapping("/")
+    public String index() {
         LOGGER.debug("index page");
+        return "index";
     }
 
 }
