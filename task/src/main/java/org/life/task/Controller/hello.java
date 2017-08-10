@@ -12,7 +12,7 @@ public class hello {
     @RequestMapping("/")
     public String index() {
         LOGGER.debug("index page");
-        return "index";
+        return "LogIn";
     }
 
 }
