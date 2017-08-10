@@ -1,0 +1,8 @@
+# Maven
+target/
+
+# intellij idea
+.idea/
+*.iml
+lib/
+/lib
