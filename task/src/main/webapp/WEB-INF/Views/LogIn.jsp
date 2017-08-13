@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: wxksk
@@ -10,8 +11,8 @@
 <head>
     <title>用户登录</title>
 </head>
-<script type="text/javascript" src="<%=request.getContextPath()%>/WEB-INF/statics/js/jquery-3.2.1.min.js"></script>
-<script type="text/javascript" src="<%=request.getContextPath()%>/WEB-INF/statics/js/jquery.cookie.js"></script>
+<script type="text/javascript" src='<c:url value="/js/jquery-3.2.1.min.js"></c:url>'></script>
+<script type="text/javascript" src='<c:url value="/js/jquery.cookie.js"></c:url>'></script>
 <script type="text/javascript">
     $(document).ready(function () {
         $("#login_button").click(function () {

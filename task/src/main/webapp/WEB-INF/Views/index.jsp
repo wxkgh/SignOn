@@ -12,7 +12,7 @@
 </head>
 <body>
     <div style="text-align: center">
-        <h1>你好。</h1><br>
+        <h1>&nbsp;&nbsp;你好。</h1><br>
         <h1>Hello.</h1>
         <h2>您还未登录，请先<a href="/LogIn">登录</a></h2>
     </div>
