@@ -13,9 +13,14 @@ public class hello {
         return "index";
     }
 
-    @RequestMapping("/LogIn")
+    @RequestMapping("/login")
     public String login() {
-        return "LogIn";
+        return "login";
+    }
+
+    @RequestMapping("/user")
+    public void user() {
+
     }
 
 

@@ -35,7 +35,7 @@
             <version>1.7.25</version>
         </dependency>
 
-        <!-- J2EE : Servlet, JSP, Jstl -->
+        <!-- J2EE : Servlet, JSP, JSTL -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
@@ -57,6 +57,18 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>6.0.6</version>
+        </dependency>
+
+        <!-- dbcp -->
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-pool</groupId>
+            <artifactId>commons-pool</artifactId>
+            <version>1.6</version>
         </dependency>
 
         <!-- -->
