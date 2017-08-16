@@ -1,14 +1,14 @@
 package org.life.task.DAO;
 
 import org.apache.commons.dbcp.BasicDataSource;
-import org.life.task.Config.DataBaseConfig;
+import org.life.task.Config.dataBaseConfig;
 import org.springframework.context.annotation.Bean;
 
 public class dataSource {
     @Bean
     public BasicDataSource newDataSource() {
         BasicDataSource ds = new BasicDataSource();
-        DataBaseConfig dataBaseConfig = new DataBaseConfig();
+        dataBaseConfig dataBaseConfig = new dataBaseConfig();
         ds.setDriverClassName(dataBaseConfig.getJdbc_driver());
         ds.setUrl(dataBaseConfig.getJdbc_url());
         ds.setUsername(dataBaseConfig.getJdbc_username());

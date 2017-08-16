@@ -19,7 +19,7 @@
             var flag = Check();
             if (true == flag) {
                 $.ajax({
-                    url: "/user_login",
+                    url: "/log",
                     type: "POST",
                     data: $("#form").serialize(),
                     success: function () {
@@ -27,7 +27,7 @@
                     },
                     error: function () {
                         alert("用户名或密码错误");
-                        window.location.href="SignIn.jsp";
+                        window.location.href = "login";
                     }
                 })
             }
