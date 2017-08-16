@@ -6,7 +6,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @PropertySource(value = "classpath:config.properties")
-public class DataBaseConfig {
+public class dataBaseConfig {
     @Value("${jdbc.driver}")
     private String jdbc_driver;
 
