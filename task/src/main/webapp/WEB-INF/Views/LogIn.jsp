@@ -19,7 +19,7 @@
             var flag = Check();
             if (true == flag) {
                 $.ajax({
-                    url: "/log",
+                    url: "/signin",
                     type: "POST",
                     data: $("#form").serialize(),
                     success: function () {
