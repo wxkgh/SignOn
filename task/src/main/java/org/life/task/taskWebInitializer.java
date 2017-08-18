@@ -1,18 +1,18 @@
 package org.life.task;
 
-import org.life.task.Config.rootConfig;
-import org.life.task.Config.webConfig;
+import org.life.task.Config.RootConfig;
+import org.life.task.Config.WebConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-public class taskWebInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+public class TaskWebInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class<?>[] { rootConfig.class };
+        return new Class<?>[] { RootConfig.class };
     }
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class<?>[] { webConfig.class };
+        return new Class<?>[] { WebConfig.class };
     }
 
     @Override

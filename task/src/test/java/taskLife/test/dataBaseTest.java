@@ -23,8 +23,12 @@ public class dataBaseTest {
 
     @Test
     public void findUserTest() {
-        User user =  userDao.finduser("xiaoming", "123456");
-        System.out.println(user.getId());
+        User user =  userDao.findUser("xiaoming", "123456");
+        if (user == null) {
+            System.out.println("not found");
+        } else {
+            System.out.println("found");
+        }
     }
 
 }

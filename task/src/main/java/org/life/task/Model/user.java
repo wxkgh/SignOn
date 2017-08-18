@@ -3,12 +3,16 @@ package org.life.task.Model;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public class user {
+public class User {
     private long id;
     private String username;
     private String password;
 
-    public user(String username, String password) {
+    public User() {
+    }
+
+    public User(long id, String username, String password) {
+        this.id = id;
         this.username = username;
         this.password = password;
     }
