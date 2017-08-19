@@ -1,5 +1,6 @@
 package taskLife.test;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.life.task.Config.RootConfig;
@@ -21,13 +22,29 @@ public class dataBaseTest {
 
     @Test
     public void findUserTest() throws IllegalAccessException, InstantiationException {
-        User user = userService.getUser("xiaomng", "123456");
-        if (user == null ) {
-            System.out.println("not found");
-        } else {
-            System.out.println("found");
-            System.out.println("userid : " + user.getId());
-        }
+//        User user = userService.findUser("xiaomng", "123456");
+//        if (user == null ) {
+//            System.out.println("not found");
+//        } else {
+//            System.out.println("found");
+//            System.out.println("userid : " + user.getId());
+//        }
+    }
+
+    @Test
+    public void addUserTest() {
+//        User xiaohong = new User("xiaohong", "654321");
+//        if (userService.addUser(xiaohong)) {
+//            System.out.println("added");
+//        } else {
+//            System.out.println("failed");
+//        }
+    }
+
+    @Test
+    public void deleteUserTest() {
+        User xiaohong = new User(12002, "xiaohong", "654321");
+        Assert.assertTrue(userService.deleteUser(xiaohong));
     }
 
 }

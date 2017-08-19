@@ -24,6 +24,20 @@ public class Dao {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    public boolean insertEntity(String sql) {
+        return updateEntity(sql);
+    }
+
+    public boolean deleteEntity(String sql) {
+        return updateEntity(sql);
+    }
+
+    public boolean updateEntity(String sql) {
+        if (1 != jdbcTemplate.update(sql)) {
+            return false;
+        }
+        return true;
+    }
 
     public <T> T queryEntity(Class<T> entityClass, String sql) {
         try {
