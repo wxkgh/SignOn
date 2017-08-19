@@ -12,7 +12,6 @@
     <title>用户登录</title>
 </head>
 <script type="text/javascript" src='<c:url value="/js/jquery-3.2.1.min.js"></c:url>'></script>
-<script type="text/javascript" src='<c:url value="/js/jquery.cookie.js"></c:url>'></script>
 <script type="text/javascript">
     $(document).ready(function () {
         $("#login_button").click(function () {
@@ -24,6 +23,7 @@
                     data: $("#form").serialize(),
                     success: function () {
                         alert("验证成功")
+                        window.location.href = "userIndex";
                     },
                     error: function () {
                         alert("用户名或密码错误");
