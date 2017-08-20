@@ -35,23 +35,23 @@ public class UserDataBaseTest {
         Assert.assertNull(userService.findUser("Mr.Boom", "77711124"));
     }
 
-//    @Test
-//    public void addUserTest() {
-//        User xiaohong = new User("xiaohong", "654321");
-//        Assert.assertFalse(userService.addUser(xiaohong));
-//    }
-//
-//    @Test
-//    public void deleteUserTest() throws IllegalAccessException, InstantiationException {
-//        User targetUser = userService.findUser("xiaohong", "654321");
-//        Assert.assertTrue(userService.deleteUser(targetUser));
-//    }
-//
-//    @Test
-//    public void updateUserTest() throws IllegalAccessException, InstantiationException {
-//        User targetUser = userService.findUser("xiaohong", "654321");
-//        targetUser.setUsername("xiaoming");
-//        Assert.assertFalse(userService.updateUser(targetUser));
-//    }
+    @Test
+    public void addUserTest() {
+        User xiaohong = new User("xiaohong", "654321");
+        Assert.assertTrue(userService.addUser(xiaohong));
+    }
+
+    @Test
+    public void deleteUserTest() throws IllegalAccessException, InstantiationException {
+        User targetUser = userService.findUser("xiaoming", "123456");
+        Assert.assertTrue(userService.deleteUser(targetUser));
+    }
+
+    @Test
+    public void updateUserTest() throws IllegalAccessException, InstantiationException {
+        User targetUser = userService.findUser("xiaoming", "123456");
+        targetUser.setUsername("xiaohong");
+        Assert.assertTrue(userService.updateUser(targetUser));
+    }
 
 }
