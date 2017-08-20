@@ -8,11 +8,16 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.*;
 import org.springframework.stereotype.Repository;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.List;
 
 @Repository
 public class Dao {
@@ -22,6 +27,20 @@ public class Dao {
     @Autowired
     public Dao(BasicDataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
+    public void executeSQLFile(String filePath) {
+        InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(filePath);
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        try {
+            String sql;
+            while ((sql = bufferedReader.readLine()) != null) {
+                jdbcTemplate.update(sql);
+            }
+        } catch (IOException e) {
+            LOGGER.error("execute sql file failure", e);
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean insertEntity(String sql) {
@@ -50,6 +69,13 @@ public class Dao {
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T>List<T> queryEntityList(Class<T> entityClass, String sql) {
+        List<T> entityList;
+        entityList =(List<T>) jdbcTemplate.queryForList(sql, entityClass.getClass());
+        return entityList;
     }
 
     private <T> T toPOJO(Class<T> cls, ResultSet resultSet, ResultSetMetaData data, int count) throws SQLException {
