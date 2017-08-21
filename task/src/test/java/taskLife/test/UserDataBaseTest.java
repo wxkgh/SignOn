@@ -52,6 +52,7 @@ public class UserDataBaseTest {
         User targetUser = userService.findUser("xiaoming", "123456");
         targetUser.setUsername("xiaohong");
         Assert.assertTrue(userService.updateUser(targetUser));
+        Assert.assertNotNull(userService.getUser(targetUser.getId()));
     }
 
 }

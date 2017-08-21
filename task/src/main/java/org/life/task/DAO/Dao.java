@@ -18,6 +18,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class Dao {
@@ -35,7 +36,7 @@ public class Dao {
         try {
             String sql;
             while ((sql = bufferedReader.readLine()) != null) {
-                jdbcTemplate.update(sql);
+                jdbcTemplate.execute(sql);
             }
         } catch (IOException e) {
             LOGGER.error("execute sql file failure", e);
@@ -43,8 +44,27 @@ public class Dao {
         }
     }
 
-    public boolean insertEntity(String sql) {
-        return updateEntity(sql);
+    public <T> boolean insertEntity(Class<T> entityClass, Map<String, Object> fieldMap) {
+        if (fieldMap.isEmpty()) {
+            LOGGER.error("Can not insert entity : fieldMap is empty");
+            return false;
+        }
+
+        String sql = "INSERT INTO " + entityClass.getSimpleName();
+        StringBuffer columns = new StringBuffer("(");
+        StringBuffer values = new StringBuffer("(");
+        for (String filedName : fieldMap.keySet()) {
+            columns.append(filedName).append(",");
+            values.append("?, ");
+        }
+        columns.replace(columns.lastIndexOf(","), columns.length(), ")");
+        values.replace(values.lastIndexOf(","), values.length(), ")");
+        sql += columns + "VALUES" + values;
+        Object[] params = fieldMap.values().toArray();
+        if (jdbcTemplate.update(sql, params) == 1) {
+            return true;
+        }
+        return false;
     }
 
     public boolean deleteEntity(String sql) {

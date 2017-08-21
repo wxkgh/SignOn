@@ -5,6 +5,9 @@ import org.life.task.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Component
 public class UserService {
     @Autowired
@@ -13,8 +16,10 @@ public class UserService {
     public boolean addUser(User newUser) {
         String username = newUser.getUsername();
         String password = newUser.getPassword();
-        String sql = "INSERT INTO user(username, password) VALUES ('" + username + "', '"+ password +"')";
-        return userDao.insertEntity(sql);
+        Map<String, Object> fieldMap = new HashMap<>();
+        fieldMap.put("username", username);
+        fieldMap.put("password", password);
+        return userDao.insertEntity(User.class, fieldMap);
     }
 
     public boolean deleteUser(User oldUser) {
