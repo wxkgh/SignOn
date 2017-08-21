@@ -17,6 +17,7 @@ import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -67,15 +68,33 @@ public class Dao {
         return false;
     }
 
-    public boolean deleteEntity(String sql) {
-        return updateEntity(sql);
+    public <T> boolean deleteEntity(Class<T> entityClass, long id) {
+        String sql = "DELETE FROM " + entityClass.getSimpleName() + " WHERE id = ?";
+        if (jdbcTemplate.update(sql, id) == 1) {
+            return true;
+        }
+        return false;
     }
 
-    public boolean updateEntity(String sql) {
-        if (1 != jdbcTemplate.update(sql)) {
+    public <T> boolean updateEntity(Class<T> entityClass, long id, Map<String, Object> fieldMap) {
+        if (fieldMap.isEmpty()) {
+            LOGGER.error("Can not update entity : fieldMap is empty");
             return false;
         }
-        return true;
+        String sql = "UPDATE " + entityClass.getSimpleName() + " SET ";
+        StringBuffer columns = new StringBuffer();
+        for (String fieldName : fieldMap.keySet()) {
+            columns.append(fieldName).append("=?, ");
+        }
+        sql += columns.substring(0, columns.lastIndexOf(", ")) + " WHERE id = ?";
+        List<Object> paramList = new ArrayList<>();
+        paramList.addAll(fieldMap.values());
+        paramList.add(id);
+        Object[] params = paramList.toArray();
+        if (jdbcTemplate.update(sql, params) == 1) {
+            return true;
+        }
+        return false;
     }
 
     public <T> T queryEntity(Class<T> entityClass, String sql) {

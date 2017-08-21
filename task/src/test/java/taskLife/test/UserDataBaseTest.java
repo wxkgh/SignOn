@@ -21,12 +21,9 @@ public class UserDataBaseTest {
     @Autowired
     UserService userService;
 
-    @Autowired
-    Dao userDao;
-
     @Before
     public void init() {
-        userDao.executeSQLFile("sql/user_init.sql");
+        userService.executeSQLFile("sql/user_init.sql");
     }
 
     @Test

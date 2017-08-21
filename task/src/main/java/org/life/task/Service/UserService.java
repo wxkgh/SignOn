@@ -13,6 +13,10 @@ public class UserService {
     @Autowired
     private Dao userDao;
 
+    public void executeSQLFile(String filePath) {
+        userDao.executeSQLFile(filePath);
+    }
+
     public boolean addUser(User newUser) {
         String username = newUser.getUsername();
         String password = newUser.getPassword();
@@ -23,16 +27,14 @@ public class UserService {
     }
 
     public boolean deleteUser(User oldUser) {
-        long userid = oldUser.getId();
-        String sql = "DELETE FROM user WHERE id = " + String.valueOf(userid);
-        return userDao.deleteEntity(sql);
+        return userDao.deleteEntity(User.class, oldUser.getId());
     }
 
     public boolean updateUser(User currentUser) {
-        String username = currentUser.getUsername();
-        String password = currentUser.getPassword();
-        String sql = "UPDATE user SET username = \"" + username + "\" , password = \"" + password + "\"" + "WHERE id = " +currentUser.getId();
-        return userDao.updateEntity(sql);
+        Map<String, Object> fieldMap = new HashMap<>();
+        fieldMap.put("username", currentUser.getUsername());
+        fieldMap.put("password", currentUser.getPassword());
+        return userDao.updateEntity(User.class, currentUser.getId(), fieldMap);
     }
 
     public User findUser(String username, String password) throws InstantiationException, IllegalAccessException {

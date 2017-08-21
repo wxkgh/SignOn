@@ -3,34 +3,44 @@ package org.life.task.Service;
 import org.life.task.DAO.Dao;
 import org.life.task.Model.Task;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class TaskService {
     @Autowired
     Dao taskDao;
 
-    public boolean addTask(Task task) {
+    public void executeSQLFile(String filePath) {
+        taskDao.executeSQLFile(filePath);
+    }
+
+    public boolean addTask(Task newTask) {
         Map<String, Object> fieldMap = new HashMap<>();
-        fieldMap.put("userid", task.getUserid());
-        fieldMap.put("title", task.getTitle());
-        fieldMap.put("reword", task.getReword());
-        fieldMap.put("number", task.getNumber());
+        fieldMap.put("userid", newTask.getUserid());
+        fieldMap.put("title", newTask.getTitle());
+        fieldMap.put("reword", newTask.getReword());
+        fieldMap.put("number", newTask.getNumber());
 //        fieldMap.put("lable", task.getLabel());
 //        fieldMap.put("species", task.getSpecies());
         return taskDao.insertEntity(Task.class, fieldMap);
     }
 
-    public boolean deleteTask(Task task) {
-        return true;
+    public boolean deleteTask(Task oldTask) {
+        return taskDao.deleteEntity(Task.class, oldTask.getId());
     }
 
-    public boolean updateTask(Task task) {
-        return true;
+    public boolean updateTask(Task currentTask) {
+        Map<String, Object> fieldMap = new HashMap<>();
+        fieldMap.put("title", currentTask.getTitle());
+        fieldMap.put("reword", currentTask.getReword());
+        return taskDao.updateEntity(Task.class, currentTask.getId(), fieldMap);
     }
 
-    public boolean findTask(Task task) {
-        return true;
+    public Task findTask(Task task) {
+        String sql = "SELECT * FROM task WHERE userid = \""+ task.getUserid() +"\" && title = \"" + task.getTitle() + "\"";
+        return taskDao.queryEntity(Task.class, sql);
     }
 }

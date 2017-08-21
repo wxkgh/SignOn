@@ -9,6 +9,17 @@ public class Task {
     String label;
     String species;
 
+    public Task() {
+
+    }
+
+    public Task(long userid, String title, int reword, int number) {
+        this.userid = userid;
+        this.title = title;
+        this.reword = reword;
+        this.number = number;
+    }
+
     public long getId() {
         return this.id;
     }
