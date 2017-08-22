@@ -1,12 +1,11 @@
-package org.life.task.Config;
+package org.skynet.web.Config;
 
-import org.apache.commons.dbcp.BasicDataSource;
-import org.life.task.ConfigLoader;
+//import org.skynet.web.ConfigLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
+/*
 @Configuration
 public class DataBaseConfig {
     @Autowired
@@ -25,3 +24,4 @@ public class DataBaseConfig {
     }
 
 }
+*/

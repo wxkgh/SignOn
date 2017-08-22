@@ -1,7 +1,5 @@
-package org.life.task.Model;
+package org.skynet.web.Model;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class User {
     private long id;
@@ -46,13 +44,4 @@ public class User {
         this.password = password;
     }
 
-    @Override
-    public boolean equals(Object that) {
-        return EqualsBuilder.reflectionEquals(this, that, "id");
-    }
-
-    @Override
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this, "id");
-    }
 }

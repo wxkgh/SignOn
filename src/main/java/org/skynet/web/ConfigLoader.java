@@ -1,9 +1,10 @@
-package org.life.task;
+package org.skynet.web;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
+/*
 @Component
 @PropertySource(value = "classpath:config.yml")
 public class ConfigLoader {
@@ -35,3 +36,4 @@ public class ConfigLoader {
         return jdbc_password;
     }
 }
+*/

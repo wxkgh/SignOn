@@ -1,7 +1,7 @@
-package org.life.task.Service;
+package org.skynet.web.Service;
 
-import org.life.task.DAO.Dao;
-import org.life.task.Model.User;
+import org.skynet.web.DAO.Dao;
+import org.skynet.web.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

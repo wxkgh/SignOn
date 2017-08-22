@@ -1,7 +1,7 @@
-package org.life.task.Controller;
+package org.skynet.web.Controller;
 
-import org.life.task.Model.User;
-import org.life.task.Service.UserService;
+import org.skynet.web.Model.User;
+import org.skynet.web.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

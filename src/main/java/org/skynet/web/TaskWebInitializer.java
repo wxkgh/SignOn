@@ -1,7 +1,8 @@
-package org.life.task;
+package org.skynet.web;
 
-import org.life.task.Config.RootConfig;
-import org.life.task.Config.WebConfig;
+/*
+import org.skynet.web.Config.RootConfig;
+import org.skynet.web.Config.WebConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class TaskWebInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
@@ -20,3 +21,4 @@ public class TaskWebInitializer extends AbstractAnnotationConfigDispatcherServle
         return new String[] {"/"};
     }
 }
+*/

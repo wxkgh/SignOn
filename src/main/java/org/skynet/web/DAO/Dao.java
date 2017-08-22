@@ -1,6 +1,5 @@
 package org.skynet.web.DAO;
 
-import org.apache.commons.dbcp.BasicDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +23,9 @@ import java.util.Map;
 @Repository
 public class Dao {
     private static final Logger LOGGER = LoggerFactory.getLogger(Dao.class);
-    private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public Dao(BasicDataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-    }
+    private JdbcTemplate jdbcTemplate;
 
     public void executeSQLFile(String filePath) {
         InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(filePath);

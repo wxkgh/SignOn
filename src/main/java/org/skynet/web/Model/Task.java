@@ -1,4 +1,4 @@
-package org.life.task.Model;
+package org.skynet.web.Model;
 
 public class Task {
     private long id;
