@@ -17,4 +17,8 @@ public class hello {
         return "register";
     }
 
+    @RequestMapping("/login")
+    public String login() {
+        return "login";
+    }
 }

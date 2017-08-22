@@ -14,19 +14,20 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @Controller
-public class SignIn {
+public class register {
     @Autowired
     UserService userService;
-
-    @RequestMapping("/signIn")
-    public void signIn(HttpServletRequest request, HttpServletResponse response)
+    @RequestMapping("/addUser")
+    public void registerUser(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException, IllegalAccessException, InstantiationException {
         int status;
         String username = request.getParameter("username");
         String password = request.getParameter("password");
+        User newUser = new User(username, password);
 
-        User currentUser = userService.findUser(username, password);
-        if (currentUser == null) {
+        userService.addUser(newUser);
+        newUser = userService.findUser(username, password);
+        if (newUser == null) {
             status = -1;
         } else {
             status = 0;
@@ -38,10 +39,4 @@ public class SignIn {
         pw.printf("{\"status\":%d}", status);
         response.setContentType("text/json");
     }
-
-    @RequestMapping("/userIndex")
-    public String userIndex() {
-        return "userIndex";
-    }
-
 }
