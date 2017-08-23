@@ -23,9 +23,12 @@ import java.util.Map;
 @Repository
 public class Dao {
     private static final Logger LOGGER = LoggerFactory.getLogger(Dao.class);
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    public Dao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public void executeSQLFile(String filePath) {
         InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(filePath);

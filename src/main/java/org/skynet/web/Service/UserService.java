@@ -3,12 +3,12 @@ package org.skynet.web.Service;
 import org.skynet.web.DAO.Dao;
 import org.skynet.web.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
+@Service
 public class UserService {
     @Autowired
     private Dao userDao;
