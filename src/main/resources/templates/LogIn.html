@@ -14,12 +14,16 @@
                     url: "/SignIn",
                     type: "POST",
                     data: $("#form").serialize(),
-                    success: function () {
-                        alert("验证成功");
-                        window.location.href = "UserIndex";
+                    success: function (data) {
+                        if (data.status === 0) {
+                            alert("验证成功");
+                            window.location.href = "UserIndex";
+                        } else {
+                            alert("用户名或密码错误");
+                        }
                     },
                     error: function () {
-                        alert("用户名或密码错误");
+                        alert("提交错误");
                         window.location.href = "LogIn";
                     }
                 })
