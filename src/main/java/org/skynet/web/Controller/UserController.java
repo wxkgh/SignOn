@@ -1,25 +1,36 @@
 package org.skynet.web.Controller;
 
-import com.sun.deploy.net.HttpResponse;
+import org.skynet.web.Cache.RedisCache;
 import org.skynet.web.Helper.MD5Helper;
 import org.skynet.web.Mapper.UserMapper;
 import org.skynet.web.Model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class UserController {
+//    private static Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    UserMapper userMapper;
+    private UserMapper userMapper;
+
+    @Autowired
+    RedisCache redisCache;
 
     @RequestMapping("/")
     public String index() {
@@ -31,19 +42,40 @@ public class UserController {
         return "LogIn";
     }
 
-    @RequestMapping("SignIn")
+    @RequestMapping(value = "SignIn", method = RequestMethod.POST)
     public void singIn(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String md5pswd = MD5Helper.encodeByMd5(password);
 
         int status;
-        if (userMapper.findUserByAccount(username, md5pswd) != null) {
+        User currentUser = userMapper.findUserByAccount(username, password);
+        if (currentUser != null) {
             status = 0;
-            User currentUser = new User(username, password);
-            request.getSession().setAttribute("user", currentUser);
-            Cookie cookie = new Cookie("username", username);
-            response.addCookie(cookie);
+            // User ID
+            String userStr = Long.toString(currentUser.getId());
+            Cookie userCookie = new Cookie("userid", userStr);
+            response.addCookie(userCookie);
+
+            // Sequence
+            int num = (int) (Math.random() * 123);
+            String sequenceStr = MD5Helper.encodeByMd5(Integer.toString(num));
+            Cookie sequenceCookie = new Cookie("sequence", sequenceStr);
+            response.addCookie(sequenceCookie);
+
+            // Token
+            String tokenStr = MD5Helper.encodeByMd5(currentUser.getUsername() + System.currentTimeMillis());
+            Cookie tokenCookie = new Cookie("token", tokenStr);
+            response.addCookie(tokenCookie);
+
+            /* Cache */
+            Map<String, String> userMap = new HashMap<>();
+            userMap.put("sequence", sequenceStr);
+            userMap.put("token", tokenStr);
+            redisCache.setHash(userStr, userMap);
+
+
+//            LOGGER.debug(request.getRemoteAddr());
         } else {
             status = -1;
         }
