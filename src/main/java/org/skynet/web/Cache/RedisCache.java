@@ -18,6 +18,7 @@ public class RedisCache<T> {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    @SuppressWarnings("unchecked")
     public void delete(String key) {
         try {
             redisTemplate.delete(key);

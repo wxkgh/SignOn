@@ -3,46 +3,41 @@ package org.skynet.web.DataBase;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mybatis.spring.annotation.MapperScan;
-import org.skynet.web.Mapper.UserMapper;
+import org.skynet.web.Dao.Mybatis.UserMapper;
 import org.skynet.web.Model.User;
+import org.skynet.web.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest
 @DirtiesContext
 public class UserTest {
     @Autowired
-    private UserMapper userMapper;
+    private UserService userService;
 
     @Test
     public void findUserTest() throws Exception {
-        User user = userMapper.findUserByAccount("Jack", "13512345678");
+        User user = userService.findUser("Jack");
         Assert.assertNotNull(user);
     }
 
     @Test
     public void addUserTest() throws Exception {
-        int i = userMapper.insertUserByAccount("xiaoming", "123456");
-        Assert.assertEquals(1, i);
-        User user = userMapper.findUserByAccount("xiaoming", "123456");
-        Assert.assertNotNull(user);
+        Assert.assertTrue(userService.addUser("xiaoming", "123456abc"));
     }
 
     @Test
-    public void updateUserTest() throws Exception {
-        User user = userMapper.findUserByAccount("xiaoming", "123456");
-        int i = userMapper.updateUser("xiaohong", "123456", user.getId());
-        Assert.assertEquals(1, i);
+    public void logInTest() throws Exception {
+        Assert.assertTrue(userService.logIn("xiaohong", "abcdef123"));
     }
 
     @Test
     public void deleteUserTest() throws Exception {
-        User user = userMapper.findUserByAccount("xiaohong", "123456");
-        int i = userMapper.deleteUser(user.getId());
-        Assert.assertEquals(1, i);
+        User user = userService.findUser("xiaohong");
+        Assert.assertTrue(userService.deleteUser(user.getId()));
     }
 }

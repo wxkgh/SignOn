@@ -27,6 +27,32 @@
         })
     });
 
+    function CheckUserName() {
+        $("#username").onblur(function () {
+            var currentName = $(this).val();
+            $.ajax({
+                url: "checkUsername",
+                type: "POST",
+                data: currentName,
+                beforeSend: function () {
+                    $("#name_info").text = "正在检测用户名...";
+                    $("#name_info").text.style.color = "BLUE";
+                },
+                success: function (result) {
+                    if (result.status === 0) {
+                        $("#name_info").text = "该用户名可以使用"
+                    } else if (result.status === -1) {
+                        $("#name_info").text = "该用户名已存在"
+                    }
+                },
+                error: function () {
+                    alert("连接错误");
+                }
+            })
+        });
+    }
+
+
     /**
      * @return {boolean}
      */
@@ -63,7 +89,7 @@
 <div style="text-align: center">
     <h2>用户注册</h2>
     <form id="form" action="" method="post" onsubmit="">
-        用户名:<input id="username" name="username"/><br/>
+        用户名:<input id="username" name="username"/><span id="name_info"></span><br/>
         密  码:<input id="password" name="password"/><br/>
         <input class="btn" value="注册" id="login_button" type="button"/>
         <input class="btn" value="重置" id="reset_button" type="button" onclick="Reset()"/>

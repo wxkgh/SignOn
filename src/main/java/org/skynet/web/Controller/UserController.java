@@ -1,15 +1,14 @@
 package org.skynet.web.Controller;
 
+import org.apache.commons.codec.digest.Md5Crypt;
 import org.skynet.web.Cache.RedisCache;
-import org.skynet.web.Helper.MD5Helper;
-import org.skynet.web.Mapper.UserMapper;
+import org.skynet.web.Dao.Mybatis.UserMapper;
 import org.skynet.web.Model.User;
+import org.skynet.web.Service.UserService;
+import org.skynet.web.Utils.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,65 +16,60 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
 @Controller
 public class UserController {
-//    private static Logger LOGGER = LoggerFactory.getLogger(UserController.class);
-
-    @Autowired
-    private UserMapper userMapper;
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     RedisCache redisCache;
 
-    @RequestMapping("/")
-    public String index() {
-        return "Index";
-    }
-
-    @RequestMapping("LogIn")
-    public String logIn() {
-        return "LogIn";
-    }
+    @Autowired
+    UserService userService;
 
     @RequestMapping(value = "SignIn", method = RequestMethod.POST)
     public void singIn(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        String md5pswd = MD5Helper.encodeByMd5(password);
 
+//        String salt = BCrypt.gensalt(12);
+//        String pswd = BCrypt.hashpw(password, salt);
+//
+//        int status;
+//        User currentUser = userMapper.findUserByAccount(username, pswd);
+//        if (currentUser != null) {
+//            status = 0;
+//            // User ID
+//            String userStr = Long.toString(currentUser.getId());
+//            Cookie userCookie = new Cookie("userid", userStr);
+//            response.addCookie(userCookie);
+//
+//            // Sequence
+//            int num = (int) (Math.random() * 123);
+//            String sequenceStr = Md5Crypt.md5Crypt(Integer.toString(num).getBytes());
+//            Cookie sequenceCookie = new Cookie("sequence", sequenceStr);
+//            response.addCookie(sequenceCookie);
+//
+//            // Token
+//            String tokenStr = Md5Crypt.md5Crypt((currentUser.getUsername() + System.currentTimeMillis()).getBytes());
+//            Cookie tokenCookie = new Cookie("token", tokenStr);
+//            response.addCookie(tokenCookie);
+//
+//            /* Cache */
+//            Map<String, String> userMap = new HashMap<>();
+//            userMap.put("sequence", sequenceStr);
+//            userMap.put("token", tokenStr);
+//            redisCache.setHash(userStr, userMap);
+//
+//        } else {
+//            status = -1;
+//        }
         int status;
-        User currentUser = userMapper.findUserByAccount(username, password);
-        if (currentUser != null) {
+        if (userService.logIn(username, password)) {
             status = 0;
-            // User ID
-            String userStr = Long.toString(currentUser.getId());
-            Cookie userCookie = new Cookie("userid", userStr);
-            response.addCookie(userCookie);
-
-            // Sequence
-            int num = (int) (Math.random() * 123);
-            String sequenceStr = MD5Helper.encodeByMd5(Integer.toString(num));
-            Cookie sequenceCookie = new Cookie("sequence", sequenceStr);
-            response.addCookie(sequenceCookie);
-
-            // Token
-            String tokenStr = MD5Helper.encodeByMd5(currentUser.getUsername() + System.currentTimeMillis());
-            Cookie tokenCookie = new Cookie("token", tokenStr);
-            response.addCookie(tokenCookie);
-
-            /* Cache */
-            Map<String, String> userMap = new HashMap<>();
-            userMap.put("sequence", sequenceStr);
-            userMap.put("token", tokenStr);
-            redisCache.setHash(userStr, userMap);
-
-
-//            LOGGER.debug(request.getRemoteAddr());
         } else {
             status = -1;
         }
@@ -86,13 +80,7 @@ public class UserController {
     }
 
     @RequestMapping("LogOut")
-    public void logOut(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            response.sendRedirect("/");
-            return;
-        }
-
+    public String logOut(HttpServletRequest request, HttpServletResponse response) throws Exception {
         // cookies
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
@@ -101,20 +89,19 @@ public class UserController {
             cookie.setPath("SignIn");
             response.addCookie(cookie);
         }
+//        request.getRequestDispatcher("NotLogIn").forward(request, response);
 
-        // session
-        session.removeAttribute("user");
-        response.sendRedirect("/");
+        return "NotLogIn";
     }
 
     @RequestMapping("AddUser")
     public void addUser(HttpServletResponse response, HttpServletRequest request) throws Exception {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        String md5pswd = MD5Helper.encodeByMd5(password);
 
         int status;
-        if (userMapper.insertUserByAccount(username, md5pswd) == 1) {
+
+        if (userService.addUser(username, password)) {
             status = 0;
         } else {
             status = -1;
@@ -125,39 +112,21 @@ public class UserController {
         response.setContentType("text/json");
     }
 
-    @RequestMapping("NotLogIn")
-    public String notLogIn() {
-        return "NotLogIN";
-    }
+    @RequestMapping(value = "checkUsername", method = RequestMethod.POST)
+    public void checkUser(HttpServletResponse response, HttpServletRequest request) throws Exception {
+        String username = request.getParameter("username");
+        LOGGER.debug("checking username : " + username);
 
-    @RequestMapping("Register")
-    public String register() {
-        return "Register";
-    }
+        int status;
+        if (userService.findUser(username) == null) {
+            status = 0;
+        } else {
+            status = -1;
+        }
 
-    @RequestMapping("UserIndex")
-    public String userIndex() {
-        return "UserIndex";
+        LOGGER.debug("check result : " + status);
+        PrintWriter pw = response.getWriter();
+        pw.printf("{\"status\":%d}", status);
+        response.setContentType("text/json");
     }
-
-    @RequestMapping("UserProfile")
-    public String userProfile() {
-        return "UserProfile";
-    }
-
-//    @RequestMapping(value = "/{reader}", method = RequestMethod.GET)
-//    public String readersBooks(@PathVariable("reader") String reader, Model model) {
-//        List<Book> readingList = readingListRepository.findByReader(reader);
-//        if (readingList != null) {
-//            model.addAttribute("books", readingList);
-//        }
-//        return "userList";
-//    }
-//
-//    @RequestMapping(value = "/{reader}", method = RequestMethod.POST)
-//    public String addToReadingList(@PathVariable("reader") String reader, Book book) {
-//        book.setReader(reader);
-//        readingListRepository.save(book);
-//        return "redirect:/{reader}";
-//    }
 }
