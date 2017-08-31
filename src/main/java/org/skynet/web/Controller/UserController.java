@@ -33,9 +33,8 @@ public class UserController {
 
     @RequestMapping(value = "SignIn", method = RequestMethod.POST)
     public void singIn(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-
+        JacksonJsonParser jacksonJsonParser = new JacksonJsonParser();
+        Map<String, Object> userMap = jacksonJsonParser.parseMap(request.getParameter("userinfo"));
 //        String salt = BCrypt.gensalt(12);
 //        String pswd = BCrypt.hashpw(password, salt);
 //
@@ -69,7 +68,7 @@ public class UserController {
 //            status = -1;
 //        }
         int status;
-        if (userService.logIn(username, password)) {
+        if (userService.logIn(userMap.get("username").toString(), userMap.get("password").toString())) {
             status = 0;
         } else {
             status = -1;
@@ -98,7 +97,7 @@ public class UserController {
     @RequestMapping("AddUser")
     public void addUser(HttpServletResponse response, HttpServletRequest request) throws Exception {
         JacksonJsonParser jacksonJsonParser = new JacksonJsonParser();
-        Map<String, Object> userMap = jacksonJsonParser.parseMap(request.getParameter("setting"));
+        Map<String, Object> userMap = jacksonJsonParser.parseMap(request.getParameter("userinfo"));
 
         int status;
         if (userService.addUser(userMap.get("username").toString(), userMap.get("password").toString())) {

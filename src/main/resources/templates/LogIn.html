@@ -10,10 +10,12 @@
         $("#login_button").click(function () {
             var flag = Check();
             if (true === flag) {
+                var put_set = {"username" : $("#username").val(), "password" : $("#password").val()};
+                var json_set = JSON.stringify(put_set);
                 $.ajax({
                     url: "/SignIn",
                     type: "POST",
-                    data: $("#form").serialize(),
+                    data : "userinfo=" + json_set,
                     success: function (data) {
                         if (data.status === 0) {
                             alert("验证成功");
@@ -58,14 +60,22 @@
 
 </script>
 <body>
-<div style="text-align: center">
-    <h2>用户登录</h2>
-    <form id="form" action="" method="post" onsubmit="">
-        用户名:<input id="username" name="username"/><br/>
-        密  码:<input id="password" name="password"/><br/>
-        <input class="btn" value="登录" id="login_button" type="button"/>
-        <input class="btn" value="重置" id="reset_button" type="button" onclick="Reset()"/>
-    </form>
-</div>
+    <h2 style="text-align: center">用户登录</h2>
+    <table border="0" align="center" style="font-size:13px" width="300">
+        <tr>
+            <td align="right" height="30">用户名:</td>
+            <td><input id="username" name="username" class="text" type="text" value="" style="width:140px;margin-left:10px"/></td>
+        </tr>
+        <tr>
+            <td align="right" height="30">密码:</td>
+            <td><input id="password" name="password" class="text" type="text" value="" style="width:140px;margin-left:10px;"/></td>
+        </tr>
+        <tr>
+            <td align="center" colspan="2">
+                <input class="btn" value="登录" id="login_button" type="button" style="margin-top:10px"/>
+                <input class="btn" value="重置" id="reset_button" type="button" onclick="Reset()" style="margin-left:20px"/>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>
