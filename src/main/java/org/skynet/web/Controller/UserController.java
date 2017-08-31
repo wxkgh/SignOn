@@ -9,6 +9,7 @@ import org.skynet.web.Utils.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,10 +26,10 @@ public class UserController {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    RedisCache redisCache;
+    private RedisCache redisCache;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @RequestMapping(value = "SignIn", method = RequestMethod.POST)
     public void singIn(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -96,12 +97,11 @@ public class UserController {
 
     @RequestMapping("AddUser")
     public void addUser(HttpServletResponse response, HttpServletRequest request) throws Exception {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
+        JacksonJsonParser jacksonJsonParser = new JacksonJsonParser();
+        Map<String, Object> userMap = jacksonJsonParser.parseMap(request.getParameter("setting"));
 
         int status;
-
-        if (userService.addUser(username, password)) {
+        if (userService.addUser(userMap.get("username").toString(), userMap.get("password").toString())) {
             status = 0;
         } else {
             status = -1;
