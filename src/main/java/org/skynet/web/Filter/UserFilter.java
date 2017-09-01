@@ -1,5 +1,10 @@
 package org.skynet.web.Filter;
 
+import org.skynet.web.Cache.RedisCache;
+import org.skynet.web.Utils.CookiesUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 
 import javax.servlet.*;
@@ -9,6 +14,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Map;
 
 @Order(1)
 @WebFilter(filterName = "testFilter1", urlPatterns = "/*", asyncSupported = true,
@@ -17,6 +23,9 @@ import java.io.IOException;
 })
 public class UserFilter implements Filter {
     private FilterConfig config;
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserFilter.class);
+    @Autowired
+    RedisCache redisCache;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -24,6 +33,7 @@ public class UserFilter implements Filter {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
         throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
@@ -36,29 +46,20 @@ public class UserFilter implements Filter {
             return;
         }
 
-        // check cookies
-        Cookie[] cookies = req.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie :cookies) {
-                if (cookie.getValue() != null) {
+        // check cookies with redis
+        String currentUsername = CookiesUtils.getCookie(req, "username");
+        if (currentUsername != null && currentUsername.length() != 0) {
+            LOGGER.debug("username is " + currentUsername);
+            Map<String, String> tokenMap = redisCache.getHash(currentUsername);
+            if (tokenMap != null) {
+                if (tokenMap.get("sequence").equals(CookiesUtils.getCookie(req, "sequence")) &&
+                    tokenMap.get("token").equals(CookiesUtils.getCookie(req, "token"))) {
                     filterChain.doFilter(request, response);
+                    return;
                 }
             }
-        } else {
-            request.getRequestDispatcher("NotLogIn").forward(request, response);
         }
-
-
-
-//        HttpSession session = req.getSession();
-//
-//        if (session.getAttribute("user") != null) {
-//            // 如果现在存在了session，则请求向下继续传递
-//            filterChain.doFilter(request, response);
-//        } else {
-//            // 跳转到提示登陆页面
-//            request.getRequestDispatcher("NotLogIn").forward(request, response);
-//        }
+        request.getRequestDispatcher("NotLogIn").forward(request, response);
     }
 
     @Override

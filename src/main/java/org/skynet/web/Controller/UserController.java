@@ -6,6 +6,7 @@ import org.skynet.web.Dao.Mybatis.UserMapper;
 import org.skynet.web.Model.User;
 import org.skynet.web.Service.UserService;
 import org.skynet.web.Utils.BCrypt;
+import org.skynet.web.Utils.CookiesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,40 +36,31 @@ public class UserController {
     public void singIn(HttpServletRequest request, HttpServletResponse response) throws Exception {
         JacksonJsonParser jacksonJsonParser = new JacksonJsonParser();
         Map<String, Object> userMap = jacksonJsonParser.parseMap(request.getParameter("userinfo"));
-//        String salt = BCrypt.gensalt(12);
-//        String pswd = BCrypt.hashpw(password, salt);
-//
-//        int status;
-//        User currentUser = userMapper.findUserByAccount(username, pswd);
-//        if (currentUser != null) {
-//            status = 0;
-//            // User ID
-//            String userStr = Long.toString(currentUser.getId());
-//            Cookie userCookie = new Cookie("userid", userStr);
-//            response.addCookie(userCookie);
-//
-//            // Sequence
-//            int num = (int) (Math.random() * 123);
-//            String sequenceStr = Md5Crypt.md5Crypt(Integer.toString(num).getBytes());
-//            Cookie sequenceCookie = new Cookie("sequence", sequenceStr);
-//            response.addCookie(sequenceCookie);
-//
-//            // Token
-//            String tokenStr = Md5Crypt.md5Crypt((currentUser.getUsername() + System.currentTimeMillis()).getBytes());
-//            Cookie tokenCookie = new Cookie("token", tokenStr);
-//            response.addCookie(tokenCookie);
-//
-//            /* Cache */
-//            Map<String, String> userMap = new HashMap<>();
-//            userMap.put("sequence", sequenceStr);
-//            userMap.put("token", tokenStr);
-//            redisCache.setHash(userStr, userMap);
-//
-//        } else {
-//            status = -1;
-//        }
+        String username = userMap.get("username").toString();
+        String password = userMap.get("password").toString();
+
         int status;
-        if (userService.logIn(userMap.get("username").toString(), userMap.get("password").toString())) {
+        if (userService.logIn(username, password)) {
+            // Username
+            Cookie userCookie = new Cookie("username", username);
+            response.addCookie(userCookie);
+
+            // Sequence
+            int num = (int) (Math.random() * 123);
+            String sequenceStr = Md5Crypt.md5Crypt(Integer.toString(num).getBytes());
+            Cookie sequenceCookie = new Cookie("sequence", sequenceStr);
+            response.addCookie(sequenceCookie);
+
+            // Token
+            String tokenStr = Md5Crypt.md5Crypt((username + System.currentTimeMillis()).getBytes());
+            Cookie tokenCookie = new Cookie("token", tokenStr);
+            response.addCookie(tokenCookie);
+
+            /* Cache */
+            Map<String, String> userCacheMap = new HashMap<>();
+            userCacheMap.put("sequence", sequenceStr);
+            userCacheMap.put("token", tokenStr);
+            redisCache.setHash(username, userCacheMap);
             status = 0;
         } else {
             status = -1;
@@ -80,17 +72,10 @@ public class UserController {
     }
 
     @RequestMapping("LogOut")
-    public String logOut(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // cookies
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            cookie.setValue(null);
-            cookie.setMaxAge(0);
-            cookie.setPath("SignIn");
-            response.addCookie(cookie);
-        }
-//        request.getRequestDispatcher("NotLogIn").forward(request, response);
-
+    public String logOut(HttpServletResponse response) {
+        CookiesUtils.removeCookies(response, "username", null, null);
+        CookiesUtils.removeCookies(response, "sequence", null, null);
+        CookiesUtils.removeCookies(response, "token", null, null);
         return "NotLogIn";
     }
 
@@ -114,7 +99,6 @@ public class UserController {
     @RequestMapping(value = "checkUsername", method = RequestMethod.POST)
     public void checkUser(HttpServletResponse response, HttpServletRequest request) throws Exception {
         String username = request.getParameter("username");
-        LOGGER.debug("checking username : " + username);
 
         int status;
         if (userService.findUser(username) == null) {
@@ -123,7 +107,20 @@ public class UserController {
             status = -1;
         }
 
-        LOGGER.debug("check result : " + status);
+        PrintWriter pw = response.getWriter();
+        pw.printf("{\"status\":%d}", status);
+        response.setContentType("text/json");
+    }
+
+    @RequestMapping(value = "CheckCookies", method = RequestMethod.POST)
+    public void checkCookies(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        int status;
+        if (userService.cookiesCheck(request)) {
+            status = 0;
+        } else {
+            status = -1;
+        }
+
         PrintWriter pw = response.getWriter();
         pw.printf("{\"status\":%d}", status);
         response.setContentType("text/json");

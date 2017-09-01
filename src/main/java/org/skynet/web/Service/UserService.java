@@ -3,16 +3,21 @@ package org.skynet.web.Service;
 import org.skynet.web.Dao.Mybatis.UserMapper;
 import org.skynet.web.Model.User;
 import org.skynet.web.Utils.BCrypt;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.skynet.web.Utils.CookiesUtils;
+import org.skynet.web.Cache.RedisCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 @Service
 public class UserService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private RedisCache redisCache;
 //    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     public boolean addUser(String username, String password) {
@@ -36,6 +41,22 @@ public class UserService {
         }
         String inputPw = BCrypt.hashpw(password, currentUser.getSalt());
         return inputPw.equals(currentUser.getPassword());
+    }
+
+    @SuppressWarnings("unchecked")
+    public boolean cookiesCheck(HttpServletRequest request) {
+        String currentUsername = CookiesUtils.getCookie(request, "username");
+        if (currentUsername != null && currentUsername.length() != 0) {
+            Map<String, String> tokenMap = redisCache.getHash(currentUsername);
+            if (tokenMap != null) {
+                if (tokenMap.get("sequence").equals(CookiesUtils.getCookie(request, "sequence")) &&
+                        tokenMap.get("token").equals(CookiesUtils.getCookie(request, "token"))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+
     }
 
 }

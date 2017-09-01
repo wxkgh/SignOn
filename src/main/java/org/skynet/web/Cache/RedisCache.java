@@ -28,8 +28,14 @@ public class RedisCache<T> {
         }
     }
 
+    public void setTTL(String key, int sec) {
+    }
+
     @SuppressWarnings("unchecked")
     public Map<T, T> getHash(String key) {
+        if (key == null) {
+            return null;
+        }
         HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
         return (Map<T, T>)hashOperations.entries(key);
     }
