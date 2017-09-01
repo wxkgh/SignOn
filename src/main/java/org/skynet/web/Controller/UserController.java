@@ -2,10 +2,7 @@ package org.skynet.web.Controller;
 
 import org.apache.commons.codec.digest.Md5Crypt;
 import org.skynet.web.Cache.RedisCache;
-import org.skynet.web.Dao.Mybatis.UserMapper;
-import org.skynet.web.Model.User;
 import org.skynet.web.Service.UserService;
-import org.skynet.web.Utils.BCrypt;
 import org.skynet.web.Utils.CookiesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +69,11 @@ public class UserController {
     }
 
     @RequestMapping("LogOut")
-    public String logOut(HttpServletResponse response) {
+    public String logOut(HttpServletRequest request, HttpServletResponse response) {
+        String username = CookiesUtils.getCookie(request, "username");
+        if (username != null && username.length() != 0) {
+            redisCache.delete(username);
+        }
         CookiesUtils.removeCookies(response, "username", null, null);
         CookiesUtils.removeCookies(response, "sequence", null, null);
         CookiesUtils.removeCookies(response, "token", null, null);

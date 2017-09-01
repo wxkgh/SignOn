@@ -1,6 +1,7 @@
 package org.skynet.web.Filter;
 
 import org.skynet.web.Cache.RedisCache;
+import org.skynet.web.Service.UserService;
 import org.skynet.web.Utils.CookiesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +24,9 @@ import java.util.Map;
 })
 public class UserFilter implements Filter {
     private FilterConfig config;
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserFilter.class);
+//    private static final Logger LOGGER = LoggerFactory.getLogger(UserFilter.class);
     @Autowired
-    RedisCache redisCache;
+    UserService userService;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -47,17 +48,9 @@ public class UserFilter implements Filter {
         }
 
         // check cookies with redis
-        String currentUsername = CookiesUtils.getCookie(req, "username");
-        if (currentUsername != null && currentUsername.length() != 0) {
-            LOGGER.debug("username is " + currentUsername);
-            Map<String, String> tokenMap = redisCache.getHash(currentUsername);
-            if (tokenMap != null) {
-                if (tokenMap.get("sequence").equals(CookiesUtils.getCookie(req, "sequence")) &&
-                    tokenMap.get("token").equals(CookiesUtils.getCookie(req, "token"))) {
-                    filterChain.doFilter(request, response);
-                    return;
-                }
-            }
+        if (userService.cookiesCheck(req)) {
+            filterChain.doFilter(request, response);
+            return;
         }
         request.getRequestDispatcher("NotLogIn").forward(request, response);
     }

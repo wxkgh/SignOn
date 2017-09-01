@@ -33,17 +33,4 @@ public class CookiesUtils {
         cookie.setMaxAge(-1000);
         response.addCookie(cookie);
     }
-
-    public static boolean checkCache(HttpServletRequest request, RedisCache redisCache) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            return false;
-        }
-
-        for (Cookie cookie : cookies) {
-
-
-        }
-        return false;
-    }
 }
