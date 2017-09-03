@@ -23,3 +23,5 @@
 - [ ] 权衡cookies的过期时间
 - [ ] 实现用登录序列检测Cookies盗取的情况
 #### ~~找回密码的功能~~
+
+### [过程记录](https://github.com/wxkgh/SignOn/blob/master/Review/review.md)
