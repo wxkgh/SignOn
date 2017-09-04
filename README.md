@@ -6,22 +6,5 @@
 - 核心框架 : Spring boot 1.5.4
 - 数据库 : MySQL
 - ORM框架 Mybatis 
-## 实现细节
-#### 注册
-- [x] 重复用户名检测
-#### 账户安全
-##### 用户名和密码
-- [x] 限制用户输入一些非常容易破解的密码  
-- [x] 不要明文保存用户的密码
-##### 网络传输
-- [x] 使用https协议
-##### 用户登录状态
-- [ ] 每个页面都认证用户身份
-- [x] 不要在cookies中存放用户密码
-- [ ] 正确设计“记住密码”
-- [ ] 不让cookies有权限访问所有的操作(修改密码、修改电子邮件、消费和隐私等)
-- [ ] 权衡cookies的过期时间
-- [ ] 实现用登录序列检测Cookies盗取的情况
-#### ~~找回密码的功能~~
 
-### [过程记录](https://github.com/wxkgh/SignOn/blob/master/Review/review.md)
+#### [过程记录](https://github.com/wxkgh/SignOn/blob/master/Review/review.md)
