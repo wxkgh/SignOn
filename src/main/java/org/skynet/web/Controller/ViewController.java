@@ -10,10 +10,10 @@ public class ViewController {
         return "Index";
     }
 
-    @RequestMapping("LogIn")
-    public String logIn() {
-        return "LogIn";
-    }
+//    @RequestMapping("LogIn")
+//    public String logIn() {
+//        return "LogIn";
+//    }
 
     @RequestMapping("NotLogIn")
     public String notLogIn() {

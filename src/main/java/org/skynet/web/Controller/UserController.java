@@ -29,7 +29,30 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "SignIn", method = RequestMethod.POST)
+    //登录页
+    @RequestMapping(value = "LogIn", method = RequestMethod.GET)
+    public String logIn(HttpServletRequest request, HttpServletResponse response) {
+        String username = CookiesUtils.getCookie(request, "username");
+//        String token = CookiesUtils.getCookie(request, "token");
+        String sequence = CookiesUtils.getCookie(request, "sequence");
+        if (userService.cookiesCheck(request)) {
+            // update token
+            CookiesUtils.removeCookies(response, "token", null, null);
+            String tokenStr = Md5Crypt.md5Crypt((username + System.currentTimeMillis()).getBytes());
+            Cookie tokenCookie = new Cookie("token", tokenStr);
+            response.addCookie(tokenCookie);
+
+            redisCache.delete(username);
+            Map<String, String> userCacheMap = new HashMap<>();
+            userCacheMap.put("sequence", sequence);
+            userCacheMap.put("token", tokenStr);
+            redisCache.setHash(username, userCacheMap);
+            return "UserIndex";
+        }
+        return "LogIn";
+    }
+
+    @RequestMapping(value = "LogIn", method = RequestMethod.POST)
     public void singIn(HttpServletRequest request, HttpServletResponse response) throws Exception {
         JacksonJsonParser jacksonJsonParser = new JacksonJsonParser();
         Map<String, Object> userMap = jacksonJsonParser.parseMap(request.getParameter("userinfo"));

@@ -1,7 +1,5 @@
 package org.skynet.web.Utils;
 
-import org.skynet.web.Cache.RedisCache;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
