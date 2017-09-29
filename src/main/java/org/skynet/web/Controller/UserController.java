@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,9 +32,8 @@ public class UserController {
 
     //登录页
     @RequestMapping(value = "LogIn", method = RequestMethod.GET)
-    public String logIn(HttpServletRequest request, HttpServletResponse response) {
+    public String logIn(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String username = CookiesUtils.getCookie(request, "username");
-//        String token = CookiesUtils.getCookie(request, "token");
         String sequence = CookiesUtils.getCookie(request, "sequence");
         if (userService.cookiesCheck(request)) {
             // update token
@@ -47,7 +47,7 @@ public class UserController {
             userCacheMap.put("sequence", sequence);
             userCacheMap.put("token", tokenStr);
             redisCache.setHash(username, userCacheMap);
-            return "UserIndex";
+            response.sendRedirect("UserIndex");
         }
         return "LogIn";
     }
