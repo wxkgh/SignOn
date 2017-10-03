@@ -10,23 +10,25 @@
         $("#login_button").click(function () {
             var flag = Check();
             if (true === flag) {
-                var put_set = {"username" : $("#username").val(), "password" : $("#password").val()};
-                var json_set = JSON.stringify(put_set);
+                var json = {"username" : $("#username").val(),
+                            "password" : $("#password").val(),
+                            "backURL" : document.referrer};
+                var json_str = JSON.stringify(json);
                 $.ajax({
-                    url: "/LogIn",
+                    url: "/login",
                     type: "POST",
-                    data : "userinfo=" + json_set,
+                    data : "json=" + json_str,
                     success: function (data) {
                         if (data.status === 0) {
                             alert("验证成功");
-                            window.location.href = "UserIndex";
+                            window.location.href = document.referrer;
                         } else {
                             alert("用户名或密码错误");
                         }
                     },
                     error: function () {
                         alert("提交错误");
-                        window.location.href = "LogIn";
+                        window.location.href = "login";
                     }
                 })
             }
