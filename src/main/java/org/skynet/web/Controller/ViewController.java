@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ViewController {
     @RequestMapping("/")
     public String index() {
-        return "Index";
+        return "index";
     }
 
 //    @RequestMapping("LogIn")
@@ -27,7 +27,7 @@ public class ViewController {
 
     @RequestMapping("UserIndex")
     public String userIndex() {
-        return "UserIndex";
+        return "userIndex";
     }
 
     @RequestMapping("UserProfile")

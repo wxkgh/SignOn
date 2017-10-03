@@ -1,6 +1,8 @@
 package org.skynet.web.Service;
 
 import org.skynet.web.Dao.Mybatis.UserMapper;
+import org.skynet.web.Model.Result;
+import org.skynet.web.Model.ResultCode;
 import org.skynet.web.Model.User;
 import org.skynet.web.Utils.BCrypt;
 import org.skynet.web.Utils.CookiesUtils;
@@ -34,13 +36,18 @@ public class UserService {
         return userMapper.findUserByAccount(username);
     }
 
-    public boolean logIn(String username, String password) {
+    @SuppressWarnings("unchecked")
+    public Result<User> login(String username, String password) {
+        Result<User> result = Result.createSuccessResult();
         User currentUser = findUser(username);
         if (currentUser == null) {
-            return false;
+            result.setCode(ResultCode.ERROR).setMessage("用户名不存在");
         }
-        String inputPw = BCrypt.hashpw(password, currentUser.getSalt());
-        return inputPw.equals(currentUser.getPassword());
+        if (!currentUser.getPassword().equals(BCrypt.hashpw(password, currentUser.getSalt()))) {
+            result.setCode(ResultCode.ERROR).setMessage("密码错误");
+        }
+        result.setData(currentUser);
+        return result;
     }
 
     @SuppressWarnings("unchecked")
