@@ -71,8 +71,14 @@ public class LoginController {
         String token = CookiesUtils.getCookie(request, "token");
         if (token == null) {
             return goLoginPath();
+        } else {
+            LoginUser loginUser = tokenManager.validate(token);
+            if (loginUser != null) {
+                return "UserIndex";
+            } else {
+                return goLoginPath();
+            }
         }
-        return goLoginPath();
     }
 
     // 登录提交
@@ -121,6 +127,7 @@ public class LoginController {
         }
     }
 
+    /*
     @RequestMapping("LogOut")
     public String logOut(HttpServletRequest request, HttpServletResponse response) {
         String username = CookiesUtils.getCookie(request, "username");
@@ -132,6 +139,7 @@ public class LoginController {
         CookiesUtils.removeCookies(response, "token", null, null);
         return "NotLogIn";
     }
+    */
 
     @RequestMapping("AddUser")
     public void addUser(HttpServletResponse response, HttpServletRequest request) throws Exception {

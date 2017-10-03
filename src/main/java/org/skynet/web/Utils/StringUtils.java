@@ -1,11 +1,11 @@
 package org.skynet.web.Utils;
 
 public class StringUtils {
-    public static final boolean isEmpty(String str) {
-        if (str == null || str.length() == 0) {
-            return true;
-        }
+    public static boolean isEmpty(String str) {
+        return str == null || str.length() == 0;
+    }
 
-        return false;
+    public static boolean isNotEmpty(String str) {
+        return ! isEmpty(str);
     }
 }

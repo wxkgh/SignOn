@@ -2,6 +2,8 @@ function indexLoad() {
     if (document.cookie.length > 0) {
         var username = getCookie("username");
         if (username !== null && username.length !== 0) {
+            var a = "abc";
+            var b = "def";
             $.ajax({
                 url: "/CheckCookies",
                 type: "POST",

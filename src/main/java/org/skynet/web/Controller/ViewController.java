@@ -15,9 +15,9 @@ public class ViewController {
 //        return "LogIn";
 //    }
 
-    @RequestMapping("NotLogIn")
-    public String notLogIn() {
-        return "NotLogIN";
+    @RequestMapping("NotLogin")
+    public String notLogin() {
+        return "NotLogin";
     }
 
     @RequestMapping("Register")
