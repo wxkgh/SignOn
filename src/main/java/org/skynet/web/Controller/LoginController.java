@@ -1,7 +1,5 @@
 package org.skynet.web.Controller;
 
-import com.sun.deploy.net.HttpResponse;
-import org.apache.commons.codec.digest.Md5Crypt;
 import org.skynet.web.Cache.RedisCache;
 import org.skynet.web.Common.TokenManager;
 import org.skynet.web.Model.LoginUser;
@@ -13,7 +11,6 @@ import org.skynet.web.Utils.CookiesUtils;
 import org.skynet.web.Utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,12 +20,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URLDecoder;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 

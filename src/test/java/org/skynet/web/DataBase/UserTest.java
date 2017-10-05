@@ -3,7 +3,6 @@ package org.skynet.web.DataBase;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.skynet.web.Dao.Mybatis.UserMapper;
 import org.skynet.web.Model.User;
 import org.skynet.web.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
