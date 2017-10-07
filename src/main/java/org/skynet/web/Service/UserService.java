@@ -50,6 +50,7 @@ public class UserService {
         return result;
     }
 
+    /*
     @SuppressWarnings("unchecked")
     public boolean cookiesCheck(HttpServletRequest request) {
         String currentUsername = CookiesUtils.getCookie(request, "username");
@@ -63,7 +64,7 @@ public class UserService {
             }
         }
         return false;
-
     }
+    */
 
 }

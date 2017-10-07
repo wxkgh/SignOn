@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,19 +19,17 @@ import java.util.Map;
 public class redisTest {
 
     @Autowired
-    private RedisCache redisCache;
+    private RedisCache<String> redisCache;
 
     @Test
-    @SuppressWarnings("unchecked")
     public void test() throws Exception {
-        Map<String, String> testMap = new HashMap<>();
-        testMap.put("user1seq", "111seq");
-        testMap.put("user1tok", "111tok");
-        redisCache.setHash("user1", testMap);
+        String key = "key";
+        String field = "field";
+        String value = "value";
 
-        Map<String, String> resultMap = (Map<String, String>) redisCache.getHash("user1");
-        Assert.assertEquals("111seq", resultMap.get("user1seq"));
-        Assert.assertEquals("111tok", resultMap.get("user1tok"));
+        redisCache.hashSet(key, field, value);
+        String temp = redisCache.hashGet(key, field);
+        Assert.assertTrue(temp.equals("value"));
     }
 
 }

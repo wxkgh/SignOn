@@ -32,8 +32,6 @@ public class LoginController {
     private static final String LOGIN_PATH = "login";
 
     @Resource
-    private RedisCache redisCache;
-    @Resource
     private UserService userService;
     @Resource
     private TokenManager tokenManager;
@@ -41,25 +39,6 @@ public class LoginController {
     // 页面
     @RequestMapping(method = RequestMethod.GET)
     public String login(HttpServletRequest request, HttpServletResponse response) {
-        /*
-        String username = CookiesUtils.getCookie(request, "username");
-        String sequence = CookiesUtils.getCookie(request, "sequence");
-        if (userService.cookiesCheck(request)) {
-            // update token
-            CookiesUtils.removeCookies(response, "token", null, null);
-            String tokenStr = Md5Crypt.md5Crypt((username + System.currentTimeMillis()).getBytes());
-            Cookie tokenCookie = new Cookie("token", tokenStr);
-            response.addCookie(tokenCookie);
-
-            redisCache.delete(username);
-            Map<String, String> userCacheMap = new HashMap<>();
-            userCacheMap.put("sequence", sequence);
-            userCacheMap.put("token", tokenStr);
-            redisCache.setHash(username, userCacheMap);
-            response.sendRedirect("UserIndex");
-        }
-        return "LogIn";
-        */
         String token = CookiesUtils.getCookie(request, "token");
         if (token == null) {
             return goLoginPath();
@@ -92,46 +71,11 @@ public class LoginController {
 
             // 未登录
             if (StringUtils.isEmpty(token) || tokenManager.validate(token) == null) {
-            /*
-            // Username
-            Cookie userCookie = new Cookie("username", username);
-            response.addCookie(userCookie);
-            */
-
-                // Sequence
-//                String sequenceStr = Md5Crypt.md5Crypt(Integer.toString((int) (Math.random() * 123)).getBytes());
-//            Cookie sequenceCookie = new Cookie("sequence", sequenceStr);
-//            response.addCookie(sequenceCookie);
-
-                // Token
-//                String tokenStr = Md5Crypt.md5Crypt((username + System.currentTimeMillis()).getBytes());
-//            Cookie tokenCookie = new Cookie("token", tokenStr);
-//            response.addCookie(tokenCookie);
-
-                // Cache /
-//            Map<String, String> userCacheMap = new HashMap<>();
-//            userCacheMap.put("sequence", sequenceStr);
-//            userCacheMap.put("token", tokenStr);
-//            redisCache.setHash(username, userCacheMap);
                 token = createToken(loginUser);
                 addTokentoCookies(request, response, token);
             }
         }
     }
-
-    /*
-    @RequestMapping("LogOut")
-    public String logOut(HttpServletRequest request, HttpServletResponse response) {
-        String username = CookiesUtils.getCookie(request, "username");
-        if (username != null && username.length() != 0) {
-            redisCache.delete(username);
-        }
-        CookiesUtils.removeCookies(response, "username", null, null);
-        CookiesUtils.removeCookies(response, "sequence", null, null);
-        CookiesUtils.removeCookies(response, "token", null, null);
-        return "NotLogIn";
-    }
-    */
 
     @RequestMapping("AddUser")
     public void addUser(HttpServletResponse response, HttpServletRequest request) throws Exception {
@@ -166,6 +110,7 @@ public class LoginController {
         response.setContentType("text/json");
     }
 
+    /*
     @RequestMapping(value = "CheckCookies", method = RequestMethod.POST)
     public void checkCookies(HttpServletRequest request, HttpServletResponse response) throws Exception {
         int status;
@@ -179,6 +124,7 @@ public class LoginController {
         pw.printf("{\"status\":%d}", status);
         response.setContentType("text/json");
     }
+    */
 
     private String goLoginPath() {
         return LOGIN_PATH;
@@ -194,18 +140,12 @@ public class LoginController {
     private void addTokentoCookies(HttpServletRequest request, HttpServletResponse response, String token) {
         Cookie tokenCookie = new Cookie("token", token);
         tokenCookie.setPath("/");
-//        Cookie sequenceCookie = new Cookie("sequence", sequence);
-//        sequenceCookie.setPath("/");
 
         if ("https".equals(request.getScheme())) {
             tokenCookie.setSecure(true);
-//            sequenceCookie.setSecure(true);
         }
         tokenCookie.setHttpOnly(true);
-//        sequenceCookie.setHttpOnly(true);
-
         response.addCookie(tokenCookie);
-//        response.addCookie(sequenceCookie);
     }
 
 }
