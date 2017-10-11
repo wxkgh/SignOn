@@ -1,6 +1,5 @@
 package org.skynet.web.Controller;
 
-import org.skynet.web.Cache.RedisCache;
 import org.skynet.web.Common.TokenManager;
 import org.skynet.web.Model.LoginUser;
 import org.skynet.web.Model.Result;
@@ -72,7 +71,7 @@ public class LoginController {
             // 未登录
             if (StringUtils.isEmpty(token) || tokenManager.validate(token) == null) {
                 token = createToken(loginUser);
-                addTokentoCookies(request, response, token);
+                addTokenToCookies(request, response, token);
             }
         }
     }
@@ -137,7 +136,7 @@ public class LoginController {
         return token;
     }
 
-    private void addTokentoCookies(HttpServletRequest request, HttpServletResponse response, String token) {
+    private void addTokenToCookies(HttpServletRequest request, HttpServletResponse response, String token) {
         Cookie tokenCookie = new Cookie("token", token);
         tokenCookie.setPath("/");
 
