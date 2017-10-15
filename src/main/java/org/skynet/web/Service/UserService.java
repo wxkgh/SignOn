@@ -22,10 +22,22 @@ public class UserService {
     private RedisCache redisCache;
 //    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
-    public boolean addUser(String username, String password) {
-        String salt = BCrypt.gensalt(10);
-        String pswd = BCrypt.hashpw(password, salt);
-        return userMapper.insertUserByAccount(username, pswd, salt) == 1;
+    public Result<User> addUser(String username, String password) {
+        Result<User> result = Result.createSuccessResult();
+        User currentUser = findUser(username);
+        if (currentUser != null) {
+            result.setCode(ResultCode.ERROR).setMessage("用户名已存在");
+        } else {
+            String salt = BCrypt.gensalt(10);
+            String pswd = BCrypt.hashpw(password, salt);
+            if (userMapper.insertUserByAccount(username, pswd, salt) == 1) {
+                currentUser = findUser(username);
+                result.setData(currentUser);
+            } else {
+                result.setCode(ResultCode.ERROR).setMessage("注册失败");
+            }
+        }
+        return result;
     }
 
     public boolean deleteUser(long userid) {

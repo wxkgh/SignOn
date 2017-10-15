@@ -13,7 +13,7 @@
                 var put_set = {"username" : $("#username").val(), "password" : $("#password").val()};
                 var json_set = JSON.stringify(put_set);
                 $.ajax({
-                    url: "/AddUser",
+                    url: "/register",
                     type: "POST",
                     data : "userinfo=" + json_set,
                     success: function () {
@@ -73,7 +73,7 @@
 
 
     /**
-     * @return {boolean}
+     * @return {boolean}Register
      */
     function Check() {
         var password = document.getElementById("password").value;

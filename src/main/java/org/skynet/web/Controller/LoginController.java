@@ -76,22 +76,7 @@ public class LoginController {
         }
     }
 
-    @RequestMapping("AddUser")
-    public void addUser(HttpServletResponse response, HttpServletRequest request) throws Exception {
-        JacksonJsonParser jacksonJsonParser = new JacksonJsonParser();
-        Map<String, Object> userMap = jacksonJsonParser.parseMap(request.getParameter("userinfo"));
 
-        int status;
-        if (userService.addUser(userMap.get("username").toString(), userMap.get("password").toString())) {
-            status = 0;
-        } else {
-            status = -1;
-        }
-
-        PrintWriter pw = response.getWriter();
-        pw.printf("{\"status\":%d}", status);
-        response.setContentType("text/json");
-    }
 
     @RequestMapping(value = "checkUsername", method = RequestMethod.POST)
     public void checkUser(HttpServletResponse response, HttpServletRequest request) throws Exception {
@@ -131,7 +116,6 @@ public class LoginController {
 
     private String createToken(LoginUser loginUser) {
         String token = UUID.randomUUID().toString().replaceAll("-", "");
-
         tokenManager.addToken(token, loginUser);
         return token;
     }

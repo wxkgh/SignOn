@@ -26,7 +26,7 @@ public class UserTest {
 
     @Test
     public void addUserTest() throws Exception {
-        Assert.assertTrue(userService.addUser("xiaoming", "123456abc"));
+        Assert.assertTrue(0 == userService.addUser("xiaoming", "123456abc").getCode());
     }
 
     @Test

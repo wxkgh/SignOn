@@ -20,12 +20,7 @@ public class ViewController {
         return "NotLogin";
     }
 
-    @RequestMapping("Register")
-    public String register() {
-        return "Register";
-    }
-
-    @RequestMapping("UserIndex")
+    @RequestMapping("userIndex")
     public String userIndex() {
         return "userIndex";
     }
